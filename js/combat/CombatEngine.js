@@ -11,12 +11,14 @@ export class CombatEngine {
   start(){
     this.wave=0;this.state='starting';this.active=true;this.elapsed=0;this.waveTimer=0;this.nextWaveTimer=1;
     this.hero=null;this.enemies=[];
-    this.ui.log(`Run started — ${this.dungeon.name}.`);
+    this.ui.log(`Run started — ${this.dungeon.name}. Level ${this.progression.level}.`);
     this.bus.emit('runStarted',{dungeonId:this.dungeon.id});
+    this.bus.emit('progressionChanged');
+    this.ui.updateHud();
   }
   restartRun(){
+    // Restart the combat run, but keep the player's persistent progression.
     this.active=false;this.state='idle';this.hero=null;this.enemies=[];this.wave=0;this.elapsed=0;this.nextWaveTimer=0;this.waveTimer=0;
-    this.progression.resetRun();
     this.ui.render();
     this.ui.updateHud();
     this.start();
@@ -25,7 +27,7 @@ export class CombatEngine {
     if(!this.data.dungeons[id])return false;
     this.dungeonId=id;
     this.bus.emit('dungeonChanged',{dungeonId:id});
-    // Changing dungeon always starts a completely fresh run.
+    // Changing dungeon starts a new combat run, but keeps level, XP, gold and other progression.
     this.restartRun();
     return true;
   }
