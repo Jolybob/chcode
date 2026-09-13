@@ -1,5 +1,5 @@
 import {rng} from '../core/RNG.js';
-import {CombatUnit} from './CombatUnitV1.js?v=3';
+import {CombatUnit} from './CombatUnitV1.js?v=4';
 export class CombatEngine {
   constructor({data,bus,progression,ui}){
     this.data=data;this.bus=bus;this.progression=progression;this.ui=ui;
@@ -17,14 +17,16 @@ export class CombatEngine {
   restartRun(){
     this.active=false;this.state='idle';this.hero=null;this.enemies=[];this.wave=0;this.elapsed=0;this.nextWaveTimer=0;this.waveTimer=0;
     this.progression.resetRun();
+    this.ui.render();
+    this.ui.updateHud();
     this.start();
   }
   selectDungeon(id){
     if(!this.data.dungeons[id])return false;
-    const wasRunning=this.active||this.state==='defeat'||this.state==='victory'||this.state==='paused';
     this.dungeonId=id;
     this.bus.emit('dungeonChanged',{dungeonId:id});
-    if(wasRunning)this.restartRun();
+    // Changing dungeon always starts a completely fresh run.
+    this.restartRun();
     return true;
   }
   stop(){this.active=false;this.state='idle'}
