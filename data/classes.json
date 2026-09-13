@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "classes": {
+    "ranger": {
+      "id": "ranger",
+      "name": "Ranger",
+      "role": "ranged",
+      "baseStats": {"hp": 180, "attack": 28, "defense": 8, "attackSpeed": 1.15, "critChance": 0.1, "critDamage": 1.5, "range": 270},
+      "growth": {"hp": 22, "attack": 5, "defense": 1.2},
+      "spellIds": ["poison_arrow"]
+    }
+  }
+}
