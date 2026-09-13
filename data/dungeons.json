@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "dungeons": {
+    "tutorial_cave": {
+      "id":"tutorial_cave","name":"Tutorial Cave","waves":10,
+      "waveTemplates":[
+        {"enemies":[{"id":"slime","count":2}]},
+        {"enemies":[{"id":"slime","count":2},{"id":"goblin","count":1}]},
+        {"enemies":[{"id":"goblin","count":2}]},
+        {"enemies":[{"id":"slime","count":3},{"id":"goblin","count":1}]},
+        {"enemies":[{"id":"orc","count":1},{"id":"goblin","count":2}]},
+        {"enemies":[{"id":"orc","count":2}]},
+        {"enemies":[{"id":"goblin","count":2},{"id":"orc","count":1}]},
+        {"enemies":[{"id":"orc","count":2},{"id":"goblin","count":1}]},
+        {"enemies":[{"id":"cave_beast","count":1},{"id":"orc","count":1}]},
+        {"enemies":[{"id":"cave_beast","count":2}]}
+      ],
+      "rewardMultiplier":1.0
+    }
+  }
+}
