@@ -1,13 +1,20 @@
 {
-  "version": 1,
+  "version": 2,
   "classes": {
     "ranger": {
-      "id": "ranger",
-      "name": "Ranger",
-      "role": "ranged",
-      "baseStats": {"hp": 180, "attack": 28, "defense": 8, "attackSpeed": 1.15, "critChance": 0.1, "critDamage": 1.5, "range": 270},
-      "growth": {"hp": 22, "attack": 5, "defense": 1.2},
-      "spellIds": ["poison_arrow"]
+      "id":"ranger","name":"Ranger","role":"ranged","icon":"🏹",
+      "baseStats":{"hp":180,"attack":28,"defense":8,"attackSpeed":1.15,"critChance":0.10,"critDamage":1.5,"range":270},
+      "growth":{"hp":22,"attack":5,"defense":1.2},"spellIds":["poison_arrow"],"description":"Balanced ranged damage with a poison skill."
+    },
+    "guardian": {
+      "id":"guardian","name":"Guardian","role":"tank","icon":"🛡️",
+      "baseStats":{"hp":300,"attack":20,"defense":18,"attackSpeed":0.78,"critChance":0.05,"critDamage":1.5,"range":150},
+      "growth":{"hp":34,"attack":3.5,"defense":2.0},"spellIds":[],"description":"Slow, durable frontline fighter."
+    },
+    "assassin": {
+      "id":"assassin","name":"Assassin","role":"damage","icon":"🗡️",
+      "baseStats":{"hp":145,"attack":38,"defense":5,"attackSpeed":1.45,"critChance":0.22,"critDamage":1.9,"range":230},
+      "growth":{"hp":17,"attack":7,"defense":0.8},"spellIds":["poison_arrow"],"description":"Fast glass cannon with high critical damage."
     }
   }
 }
