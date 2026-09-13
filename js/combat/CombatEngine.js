@@ -1,98 +1,26 @@
 import {rng} from '../core/RNG.js';
-import {CombatUnit} from './CombatUnitV1.js?v=4';
+import {CombatUnit} from './CombatUnitV1.js?v=5';
 export class CombatEngine {
-  constructor({data,bus,progression,ui}){
-    this.data=data;this.bus=bus;this.progression=progression;this.ui=ui;
-    this.speed=1;this.active=false;this.hero=null;this.enemies=[];
-    this.wave=0;this.state='idle';this.waveTimer=0;this.nextWaveTimer=0;this.elapsed=0;
-    this.dungeonId=Object.keys(this.data.dungeons)[0]||'tutorial_cave';
-  }
+  constructor({data,bus,progression,ui}){this.data=data;this.bus=bus;this.progression=progression;this.ui=ui;this.speed=1;this.active=false;this.hero=null;this.enemies=[];this.wave=0;this.state='idle';this.waveTimer=0;this.nextWaveTimer=0;this.elapsed=0;this.dungeonId=Object.keys(this.data.dungeons)[0]||'tutorial_cave'}
   get dungeon(){return this.data.dungeons[this.dungeonId]||this.data.dungeons[Object.keys(this.data.dungeons)[0]]}
-  start(){
-    this.wave=0;this.state='starting';this.active=true;this.elapsed=0;this.waveTimer=0;this.nextWaveTimer=1;
-    this.hero=null;this.enemies=[];
-    this.ui.log(`Run started — ${this.dungeon.name}. Level ${this.progression.level}.`);
-    this.bus.emit('runStarted',{dungeonId:this.dungeon.id});
-    this.bus.emit('progressionChanged');
-    this.ui.updateHud();
-  }
-  restartRun(){
-    // Restart the combat run, but keep the player's persistent progression.
-    this.active=false;this.state='idle';this.hero=null;this.enemies=[];this.wave=0;this.elapsed=0;this.nextWaveTimer=0;this.waveTimer=0;
-    this.ui.render();
-    this.ui.updateHud();
-    this.start();
-  }
-  selectDungeon(id){
-    if(!this.data.dungeons[id])return false;
-    this.dungeonId=id;
-    this.bus.emit('dungeonChanged',{dungeonId:id});
-    // Changing dungeon starts a new combat run, but keeps level, XP, gold and other progression.
-    this.restartRun();
-    return true;
-  }
+  currentClass(){return this.data.classes[this.progression.classId]||this.data.classes.ranger}
+  start(){this.wave=0;this.state='starting';this.active=true;this.elapsed=0;this.waveTimer=0;this.nextWaveTimer=1;this.hero=null;this.enemies=[];this.ui.log(`Run started — ${this.dungeon.name}. ${this.currentClass().name} Lv.${this.progression.level}.`);this.bus.emit('runStarted',{dungeonId:this.dungeon.id});this.bus.emit('progressionChanged');this.ui.updateHud()}
+  restartRun(){this.active=false;this.state='idle';this.hero=null;this.enemies=[];this.wave=0;this.elapsed=0;this.nextWaveTimer=0;this.waveTimer=0;this.ui.render();this.ui.updateHud();this.start()}
+  selectClass(id){if(!this.data.classes[id])return false;this.progression.selectClass(id);this.restartRun();return true}
+  selectDungeon(id){const d=this.data.dungeons[id];if(!d)return false;if(this.progression.level<(d.minLevel||1)){this.ui.setStatus(`Locked — requires level ${d.minLevel||1}.`);return false}this.dungeonId=id;this.bus.emit('dungeonChanged',{dungeonId:id});this.restartRun();return true}
   stop(){this.active=false;this.state='idle'}
   setSpeed(v){this.speed=v}
-  update(dt){
-    if(!this.active)return;dt*=this.speed;this.elapsed+=dt;
-    if(this.state==='starting'){this.nextWaveTimer-=dt;if(this.nextWaveTimer<=0)this.startWave();return}
-    if(this.state==='between'){this.nextWaveTimer-=dt;if(this.nextWaveTimer<=0)this.startWave();return}
-    if(this.state==='victory'||this.state==='defeat')return;
-    this.updateUnits(dt);this.cleanup();if(this.enemies.length===0&&this.state==='combat')this.winWave();
-  }
-  startWave(){
-    this.wave++;this.bus.emit('waveStart',{wave:this.wave});this.ui.log(`Wave ${this.wave} incoming.`);
-    const dungeon=this.dungeon;const template=dungeon.waveTemplates[this.wave-1];
-    if(!template){this.state='victory';this.active=false;this.bus.emit('victory');return}
-    this.hero=this.createHero();this.enemies=[];let idx=0;
-    for(const group of template.enemies){
-      for(let i=0;i<group.count;i++){
-        const base=this.data.enemies[group.id];if(!base)throw new Error(`Enemy template not found: ${group.id}`);
-        const enemy=new CombatUnit({id:`e${this.wave}-${idx++}`,team:'enemy',template:base});
-        enemy.position=82+i*4+Math.floor(idx/4)*5;this.enemies.push(enemy);
-      }
-    }
-    this.state='combat';this.bus.emit('render');
-  }
-  createHero(){
-    const c=this.data.classes.ranger;if(!c)throw new Error('Class template not found: ranger');
-    const h=new CombatUnit({id:'hero',team:'hero',template:c,level:this.progression.level});
-    h.position=14;h.range=this.data.balance.player.attackRange;h.critChance=c.baseStats.critChance;h.critDamage=c.baseStats.critDamage;h.spellTimers.poison_arrow=2;return h;
-  }
-  updateUnits(dt){
-    if(!this.hero||this.hero.dead)return;
-    this.applyEffects(this.hero,dt);this.hero.attackTimer-=dt;this.hero.spellTimers.poison_arrow-=dt;
-    const target=this.closestEnemy();
-    if(target){
-      this.hero.targetId=target.id;
-      if(this.hero.attackTimer<=0&&this.hero.distanceTo(target)<=this.hero.range){this.hit(this.hero,target);this.hero.attackTimer=1/this.hero.attackSpeed}
-      if(this.hero.spellTimers.poison_arrow<=0){this.castPoisonArrow(target);this.hero.spellTimers.poison_arrow=this.data.spells.poison_arrow.cooldown}
-    }
-    for(const enemy of this.enemies){
-      if(enemy.dead)continue;this.applyEffects(enemy,dt);enemy.attackTimer-=dt;this.advance(enemy,target,dt);
-      if(enemy.attackTimer<=0&&this.targetInRange(enemy,this.hero)){this.hit(enemy,this.hero);enemy.attackTimer=1/enemy.attackSpeed}
-    }
-  }
+  update(dt){if(!this.active)return;dt*=this.speed;this.elapsed+=dt;if(this.state==='starting'){this.nextWaveTimer-=dt;if(this.nextWaveTimer<=0)this.startWave();return}if(this.state==='between'){this.nextWaveTimer-=dt;if(this.nextWaveTimer<=0)this.startWave();return}if(this.state==='victory'||this.state==='defeat')return;this.updateUnits(dt);this.cleanup();if(this.enemies.length===0&&this.state==='combat')this.winWave()}
+  startWave(){this.wave++;this.bus.emit('waveStart',{wave:this.wave});this.ui.log(`Wave ${this.wave} incoming.`);const template=this.dungeon.waveTemplates[this.wave-1];if(!template){this.state='victory';this.active=false;this.bus.emit('victory');return}this.hero=this.createHero();this.enemies=[];let idx=0;for(const group of template.enemies){for(let i=0;i<group.count;i++){const base=this.data.enemies[group.id];if(!base)throw new Error(`Enemy template not found: ${group.id}`);const enemy=new CombatUnit({id:`e${this.wave}-${idx++}`,team:'enemy',template:base});enemy.position=82+i*4+Math.floor(idx/4)*5;this.enemies.push(enemy)}}this.state='combat';this.bus.emit('render')}
+  createHero(){const c=this.currentClass();const h=new CombatUnit({id:'hero',team:'hero',template:c,level:this.progression.level});h.position=14;h.range=Number(c.baseStats.range||this.data.balance.player.attackRange);h.critChance=Number(c.baseStats.critChance||0);h.critDamage=Number(c.baseStats.critDamage||1.5);if((c.spellIds||[]).includes('poison_arrow'))h.spellTimers.poison_arrow=2;return h}
+  updateUnits(dt){if(!this.hero||this.hero.dead)return;this.applyEffects(this.hero,dt);this.hero.attackTimer-=dt;const hasPoison=(this.currentClass().spellIds||[]).includes('poison_arrow');if(hasPoison)this.hero.spellTimers.poison_arrow-=dt;const target=this.closestEnemy();if(target){this.hero.targetId=target.id;if(this.hero.attackTimer<=0&&this.hero.distanceTo(target)<=this.hero.range){this.hit(this.hero,target);this.hero.attackTimer=1/this.hero.attackSpeed}if(hasPoison&&this.hero.spellTimers.poison_arrow<=0){this.castPoisonArrow(target);this.hero.spellTimers.poison_arrow=this.data.spells.poison_arrow.cooldown}}for(const enemy of this.enemies){if(enemy.dead)continue;this.applyEffects(enemy,dt);enemy.attackTimer-=dt;this.advance(enemy,target,dt);if(enemy.attackTimer<=0&&this.targetInRange(enemy,this.hero)){this.hit(enemy,this.hero);enemy.attackTimer=1/enemy.attackSpeed}}}
   advance(enemy,target,dt){if(!target)return;const desired=18;const d=enemy.distanceTo(target);if(d>desired)enemy.position-=14*dt;if(enemy.position<18)enemy.position=18}
   targetInRange(a,b){return a.distanceTo(b)<=a.range}
   closestEnemy(){return this.enemies.filter(e=>!e.dead).sort((a,b)=>a.position-b.position)[0]}
-  hit(attacker,target){
-    const varianceBase=attacker.team==='hero'?this.data.balance.combat.heroDamageVariance:this.data.balance.combat.enemyDamageVariance;
-    const variance=1+rng.float(-varianceBase,varianceBase);let damage=Math.max(1,Math.round(attacker.attack*(100/(100+target.defense))*variance));
-    if(attacker.team==='hero'&&rng.chance(attacker.critChance||0)){damage=Math.round(damage*(attacker.critDamage||1.5));this.ui.fxCrit(target,damage)}else this.ui.fxDamage(target,damage);
-    target.hp-=damage;if(attacker.team==='hero')this.progression.totalDamage+=damage;
-    if(target.hp<=0){target.hp=0;target.dead=true;if(target.team==='enemy'){this.progression.totalKills++;this.progression.gain(target.template.xp,target.template.gold[0]+rng.int(0,target.template.gold[1]-target.template.gold[0]));this.bus.emit('enemyDeath',target)}}
-    this.bus.emit('progressionChanged');this.bus.emit('render');
-  }
+  hit(attacker,target){const varianceBase=attacker.team==='hero'?this.data.balance.combat.heroDamageVariance:this.data.balance.combat.enemyDamageVariance;const variance=1+rng.float(-varianceBase,varianceBase);let damage=Math.max(1,Math.round(attacker.attack*(100/(100+target.defense))*variance));if(attacker.team==='hero'&&rng.chance(attacker.critChance||0)){damage=Math.round(damage*(attacker.critDamage||1.5));this.ui.fxCrit(target,damage)}else this.ui.fxDamage(target,damage);target.hp-=damage;if(attacker.team==='hero')this.progression.totalDamage+=damage;if(target.hp<=0){target.hp=0;target.dead=true;if(target.team==='enemy'){this.progression.totalKills++;this.progression.gain(target.template.xp,target.template.gold[0]+rng.int(0,target.template.gold[1]-target.template.gold[0]));this.bus.emit('enemyDeath',target)}}this.bus.emit('progressionChanged');this.bus.emit('render')}
   castPoisonArrow(target){const s=this.data.spells.poison_arrow;this.ui.fxSpell(this.hero,target);target.effects.push({type:'poison',remaining:s.poisonDuration,dps:s.poisonDps})}
   applyEffects(unit,dt){for(const e of unit.effects){if(e.type==='poison'){const ticks=Math.min(dt,e.remaining);unit.hp-=e.dps*ticks;e.remaining-=dt;if(unit.hp<=0){unit.hp=0;unit.dead=true}}}unit.effects=unit.effects.filter(e=>e.remaining>0)}
   cleanup(){this.enemies=this.enemies.filter(e=>!e.dead);if(this.hero?.dead)this.defeat()}
-  winWave(){
-    this.state='between';this.progression.bestWave=Math.max(this.progression.bestWave,this.wave);
-    this.progression.gain(40+this.wave*8,Math.round(this.data.progression.goldPerWave*this.wave*this.dungeon.rewardMultiplier));
-    this.ui.log(`Wave ${this.wave} cleared!`);
-    if(this.wave>=this.dungeon.waves){this.state='victory';this.active=false;this.bus.emit('victory');return}
-    this.nextWaveTimer=this.data.balance.combat.waveDelay;this.bus.emit('waveClear',{wave:this.wave});this.bus.emit('progressionChanged');
-  }
+  winWave(){this.state='between';this.progression.bestWave=Math.max(this.progression.bestWave,this.wave);this.progression.gain(40+this.wave*8,Math.round(this.data.progression.goldPerWave*this.wave*this.dungeon.rewardMultiplier));this.ui.log(`Wave ${this.wave} cleared!`);if(this.wave>=this.dungeon.waves){this.state='victory';this.active=false;this.bus.emit('victory');return}this.nextWaveTimer=this.data.balance.combat.waveDelay;this.bus.emit('waveClear',{wave:this.wave});this.bus.emit('progressionChanged')}
   defeat(){this.state='defeat';this.active=false;this.bus.emit('defeat');this.ui.log('The hero fell. Restart the run.')}
 }
