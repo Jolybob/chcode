@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "xpBase": 100,
+  "xpGrowth": 1.22,
+  "goldPerWave": 30,
+  "levelStatMultiplier": 1.0
+}
