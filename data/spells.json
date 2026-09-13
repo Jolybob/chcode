@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "spells": {
+    "poison_arrow": {
+      "id":"poison_arrow","name":"Poison Arrow","icon":"☄️","cooldown":5,"damageMultiplier":1.75,"poisonDuration":4,"poisonDps":10,"description":"A periodic burst that poisons the closest enemy."
+    }
+  }
+}
