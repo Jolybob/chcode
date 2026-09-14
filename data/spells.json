@@ -1,8 +1,13 @@
 {
-  "version": 1,
+  "version": 2,
   "spells": {
-    "poison_arrow": {
-      "id":"poison_arrow","name":"Poison Arrow","icon":"☄️","cooldown":5,"damageMultiplier":1.75,"poisonDuration":4,"poisonDps":10,"description":"A periodic burst that poisons the closest enemy."
-    }
+    "poison_arrow": {"id":"poison_arrow","name":"Poison Arrow","icon":"☄️","type":"damage","cooldown":5,"manaCost":22,"damageMultiplier":1.75,"poisonDuration":4,"poisonDps":10,"description":"A ranged strike that poisons the closest enemy."},
+    "ranger_volley": {"id":"ranger_volley","name":"Volley","icon":"🏹","type":"damage","aoe":true,"cooldown":8,"manaCost":38,"damageMultiplier":1.05,"description":"Fires a wide volley that damages every enemy in range."},
+    "healing_draught": {"id":"healing_draught","name":"Healing Draught","icon":"💚","type":"heal","cooldown":12,"manaCost":32,"healMultiplier":0.28,"description":"Restores a portion of maximum HP when the Ranger is wounded."},
+    "guardian_shield": {"id":"guardian_shield","name":"Aegis Shield","icon":"🛡️","type":"shield","cooldown":10,"manaCost":35,"shieldMultiplier":0.65,"description":"Raises a protective barrier based on maximum HP."},
+    "guardian_recovery": {"id":"guardian_recovery","name":"Battle Recovery","icon":"✨","type":"heal","cooldown":14,"manaCost":40,"healMultiplier":0.22,"description":"Restores health during prolonged fights."},
+    "guardian_slam": {"id":"guardian_slam","name":"Ground Slam","icon":"💥","type":"damage","aoe":true,"cooldown":9,"manaCost":45,"damageMultiplier":0.95,"description":"Smashes the battlefield, damaging every nearby enemy."},
+    "shadow_strike": {"id":"shadow_strike","name":"Shadow Strike","icon":"🗡️","type":"damage","cooldown":6,"manaCost":30,"damageMultiplier":2.45,"description":"A devastating single-target assassination strike."},
+    "blade_storm": {"id":"blade_storm","name":"Blade Storm","icon":"🌪️","type":"damage","aoe":true,"cooldown":10,"manaCost":48,"damageMultiplier":1.15,"description":"A rapid area burst that strikes all living enemies."}
   }
 }
