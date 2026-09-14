@@ -1,61 +1,15 @@
-export class CraftingUI {
-  constructor({progression,data}){
-    this.p=progression;this.data=data;
-    this.panel=document.getElementById('craftingPanel');
-    this.content=document.getElementById('craftingContent');
-    this.closeBtn=document.getElementById('closeCraftingBtn');
-    this.returnFocus=null;
-    this.panel.inert=true;
-    this.panel.setAttribute('aria-hidden','true');
-    document.getElementById('craftingBtn').onclick=()=>this.open();
-    this.closeBtn.onclick=()=>this.close();
-    this.panel.addEventListener('click',e=>{if(e.target===this.panel)this.close()});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&this.panel.classList.contains('open')){e.preventDefault();this.close()}});
-    progression.bus?.on?.('materialsChanged',()=>{if(this.panel.classList.contains('open'))this.render()});
-    progression.bus?.on?.('inventoryChanged',()=>{if(this.panel.classList.contains('open'))this.render()});
-  }
-  open(){
-    this.returnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
-    this.panel.inert=false;this.panel.classList.add('open');this.panel.setAttribute('aria-hidden','false');
-    this.render();requestAnimationFrame(()=>this.closeBtn?.focus());
-  }
-  close(){
-    const target=this.returnFocus;
-    if(this.panel.contains(document.activeElement))document.activeElement.blur();
-    this.panel.classList.remove('open');this.panel.setAttribute('aria-hidden','true');this.panel.inert=true;
-    requestAnimationFrame(()=>{if(target?.isConnected)target.focus();this.returnFocus=null});
-  }
-  rarityRank(r){return ({mythic:6,legendary:5,epic:4,rare:3,uncommon:2,common:1}[String(r||'common').toLowerCase()]||1)}
-  formatStat(k,v){
-    const label={attack:'ATK',hp:'HP',defense:'DEF',critChance:'CRIT',critDamage:'CRIT DMG',attackSpeed:'SPEED'}[k]||k;
-    const pct=['critChance','attackSpeed'].includes(k)?`${Math.round(Number(v)*100)}%`:`+${v}`;
-    return `${label} ${pct}`;
-  }
-  render(){
-    const mats=this.p.materials||{}, m=this.data.crafting?.materials||{};
-    const materials=Object.entries(m).map(([id,x])=>`<span class="craft-material ${Number(mats[id]||0)>0?'has-stock':''}"><i>${x.icon}</i><span>${x.name}</span><b>${mats[id]||0}</b></span>`).join('');
-    const recipes=Object.entries(this.data.crafting?.recipes||{}).map(([id,r])=>{
-      const base=this.data.items?.[r.baseItemId];
-      if(!base)return '';
-      const rarity=String(base.rarity||'common').toLowerCase(), rank=this.rarityRank(rarity), ok=this.p.canCraft(r);
-      const cost=Object.entries(r.cost||{}).map(([k,v])=>k==='gold'?`<span class="craft-cost gold">🪙 ${v}</span>`:`<span class="craft-cost">${m[k]?.icon||'•'} ${v}<b>${mats[k]||0}</b></span>`).join('');
-      const stats=Object.entries(base.stats||{}).slice(0,4).map(([k,v])=>`<span>${this.formatStat(k,v)}</span>`).join('');
-      return `<article class="craft-recipe rarity-${rarity} ${ok?'craftable':'unavailable'}" style="--rarity-rank:${rank}">
-        <div class="craft-rarity-bar"></div>
-        <div class="craft-item-icon"><span>${base.icon||'⚒️'}</span><em>${rarity}</em></div>
-        <div class="craft-item-info"><div class="craft-item-name"><strong>${base.name||r.baseItemId}</strong><small>${r.name}</small></div><div class="craft-stats">${stats}</div><div class="craft-costs">${cost}</div></div>
-        <button class="craft-action" data-craft="${id}" ${ok?'':'disabled'}>${ok?'Forge':'Missing mats'}</button>
-      </article>`;
-    }).join('');
-    const stockTotal=Object.values(mats).reduce((a,v)=>a+Number(v||0),0);
-    this.content.innerHTML=`<div class="craft-header">
-      <div><span class="eyebrow">THE FORGE</span><h3>Crafting Workshop</h3><p>Forge equipment, roll 1–2 random affixes, and chase higher-quality gear.</p></div>
-      <div class="craft-stock"><span>Material stock</span><b>${stockTotal}</b><small>items available</small></div>
-    </div>
-    <div class="craft-materials"><div class="craft-section-label">MATERIAL SATCHEL</div><div class="craft-material-row">${materials}</div></div>
-    <div class="craft-legend"><span class="craft-section-label">FORGE RECIPES</span><div class="rarity-legend"><span class="rarity-dot common">Common</span><span class="rarity-dot uncommon">Uncommon</span><span class="rarity-dot rare">Rare</span><span class="rarity-dot epic">Epic</span><span class="rarity-dot legendary">Legendary</span></div></div>
-    <p class="craft-note">Base quality is shown clearly on every recipe. Crafted gear keeps the base rarity and receives random affixes.</p>
-    <div class="craft-recipe-list">${recipes||'<div class="craft-empty">No forge recipes available.</div>'}</div>`;
-    this.content.querySelectorAll('[data-craft]').forEach(b=>b.onclick=()=>{if(this.p.craft(this.data.crafting.recipes[b.dataset.craft]))this.render()});
-  }
+export class CraftingUI{
+ constructor({progression,data}){this.p=progression;this.data=data;this.panel=document.getElementById('craftingPanel');this.content=document.getElementById('craftingContent');this.closeBtn=document.getElementById('closeCraftingBtn');this.returnFocus=null;this.filters={slot:'all',rarity:'all',onlyReady:false,query:''};this.panel.inert=true;this.panel.setAttribute('aria-hidden','true');document.getElementById('craftingBtn').onclick=()=>this.open();this.closeBtn.onclick=()=>this.close();this.panel.addEventListener('click',e=>{if(e.target===this.panel)this.close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&this.panel.classList.contains('open')){e.preventDefault();this.close()}});progression.bus?.on?.('materialsChanged',()=>{if(this.panel.classList.contains('open'))this.render()});progression.bus?.on?.('inventoryChanged',()=>{if(this.panel.classList.contains('open'))this.render()})}
+ open(){this.returnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;this.panel.inert=false;this.panel.classList.add('open');this.panel.setAttribute('aria-hidden','false');this.render();requestAnimationFrame(()=>this.closeBtn?.focus())}
+ close(){const target=this.returnFocus;if(this.panel.contains(document.activeElement))document.activeElement.blur();this.panel.classList.remove('open');this.panel.setAttribute('aria-hidden','true');this.panel.inert=true;requestAnimationFrame(()=>{if(target?.isConnected)target.focus();this.returnFocus=null})}
+ rarityRank(r){return ({mythic:6,legendary:5,epic:4,rare:3,uncommon:2,common:1}[String(r||'common').toLowerCase()]||1)}
+ formatStat(k,v){const label={attack:'ATK',hp:'HP',defense:'DEF',critChance:'CRIT',critDamage:'CRIT DMG',attackSpeed:'SPEED'}[k]||k;const pct=['critChance','attackSpeed'].includes(k)?`${Math.round(Number(v)*100)}%`:`+${v}`;return `${label} ${pct}`}
+ slotName(slot){return ({weapon:'Weapons',armor:'Armor',ring:'Rings'}[slot]||slot)}
+ costRows(r,m,mats){return Object.entries(r.cost||{}).map(([k,v])=>{if(k==='gold'){const have=Number(this.p.gold||0);return `<span class="craft-cost gold ${have>=v?'paid':'short'}"><i>🪙</i><b>${have}</b><small>/ ${v}</small></span>`}const have=Number(mats[k]||0);return `<span class="craft-cost ${have>=v?'paid':'short'}"><i>${m[k]?.icon||'•'}</i><b>${have}</b><small>/ ${v}</small></span>`}).join('')}
+ render(){const mats=this.p.materials||{},m=this.data.crafting?.materials||{},all=Object.entries(this.data.crafting?.recipes||{}).map(([id,r])=>{const base=this.data.items?.[r.baseItemId];if(!base)return null;const rarity=String(base.rarity||'common').toLowerCase();const slot=base.slot||'other';const ok=this.p.canCraft(r);return {id,r,base,rarity,slot,ok,rank:this.rarityRank(rarity)}}).filter(Boolean).sort((a,b)=>b.rank-a.rank||String(a.base.name).localeCompare(String(b.base.name)));
+ const filtered=all.filter(x=>(this.filters.slot==='all'||x.slot===this.filters.slot)&&(this.filters.rarity==='all'||x.rarity===this.filters.rarity)&&(!this.filters.onlyReady||x.ok)&&(!this.filters.query||`${x.base.name} ${x.r.name}`.toLowerCase().includes(this.filters.query.toLowerCase())));
+ const materials=Object.entries(m).map(([id,x])=>`<span class="craft-material ${Number(mats[id]||0)>0?'has-stock':''}"><i>${x.icon}</i><span>${x.name}</span><b>${mats[id]||0}</b></span>`).join('');
+ const recipes=filtered.map(x=>`<article class="craft-recipe rarity-${x.rarity} ${x.ok?'craftable':'unavailable'}" style="--rarity-rank:${x.rank}"><div class="craft-rarity-bar"></div><div class="craft-item-icon"><span>${x.base.icon||'⚒️'}</span><em>${x.rarity}</em></div><div class="craft-item-info"><div class="craft-item-name"><strong>${x.base.name||x.r.baseItemId}</strong><small>${x.r.name} · ${this.slotName(x.slot)}</small></div><div class="craft-stats">${Object.entries(x.base.stats||{}).slice(0,4).map(([k,v])=>`<span>${this.formatStat(k,v)}</span>`).join('')}</div><div class="craft-costs">${this.costRows(x.r,m,mats)}</div></div><button class="craft-action" data-craft="${x.id}" ${x.ok?'':'disabled'}>${x.ok?'Forge':'Missing'}</button></article>`).join('');
+ const stockTotal=Object.values(mats).reduce((a,v)=>a+Number(v||0),0);this.content.innerHTML=`<div class="craft-header"><div><span class="eyebrow">THE FORGE · v3</span><h3>Crafting Workshop</h3><p>Compare gear at a glance, filter the forge, and spend only when every required resource is ready.</p></div><div class="craft-stock"><span>Material stock</span><b>${stockTotal}</b><small>resources</small></div></div><div class="craft-materials"><div class="craft-section-label">MATERIAL SATCHEL</div><div class="craft-material-row">${materials}</div></div><div class="craft-toolbar"><div class="craft-filter-group"><button class="craft-filter ${this.filters.slot==='all'?'active':''}" data-slot="all">All gear</button><button class="craft-filter ${this.filters.slot==='weapon'?'active':''}" data-slot="weapon">Weapons</button><button class="craft-filter ${this.filters.slot==='armor'?'active':''}" data-slot="armor">Armor</button><button class="craft-filter ${this.filters.slot==='ring'?'active':''}" data-slot="ring">Rings</button></div><div class="craft-filter-group rarity-filters"><button class="craft-filter ${this.filters.rarity==='all'?'active':''}" data-rarity="all">All grades</button>${['common','uncommon','rare','epic','legendary'].map(r=>`<button class="craft-filter rarity-${r} ${this.filters.rarity===r?'active':''}" data-rarity="${r}">${r}</button>`).join('')}</div><label class="craft-search"><span>⌕</span><input id="craftSearch" value="${this.filters.query.replace(/"/g,'&quot;')}" placeholder="Search gear..."></label><label class="craft-ready"><input id="craftReady" type="checkbox" ${this.filters.onlyReady?'checked':''}> Ready only</label></div><div class="craft-legend"><span class="craft-section-label">${filtered.length} / ${all.length} RECIPES</span><div class="rarity-legend"><span class="rarity-dot common">Common</span><span class="rarity-dot uncommon">Uncommon</span><span class="rarity-dot rare">Rare</span><span class="rarity-dot epic">Epic</span><span class="rarity-dot legendary">Legendary</span></div></div><p class="craft-note">Base rarity is preserved. Crafted equipment rolls 1–2 random affixes, so a high-grade base is worth checking before you forge.</p><div class="craft-recipe-list">${recipes||'<div class="craft-empty"><strong>No recipes match these filters.</strong><span>Try another grade, slot, or disable “Ready only”.</span></div>'}</div>`;
+ this.content.querySelectorAll('[data-craft]').forEach(b=>b.onclick=()=>{if(this.p.craft(this.data.crafting.recipes[b.dataset.craft]))this.render()});this.content.querySelectorAll('[data-slot]').forEach(b=>b.onclick=()=>{this.filters.slot=b.dataset.slot;this.render()});this.content.querySelectorAll('[data-rarity]').forEach(b=>b.onclick=()=>{this.filters.rarity=b.dataset.rarity;this.render()});const search=document.getElementById('craftSearch');search.oninput=e=>{this.filters.query=e.target.value;this.render();requestAnimationFrame(()=>{const q=document.getElementById('craftSearch');q?.focus();q?.setSelectionRange(q.value.length,q.value.length)})};document.getElementById('craftReady').onchange=e=>{this.filters.onlyReady=e.target.checked;this.render()}}
 }
