@@ -1,0 +1,29 @@
+/* V3.9 focused visual fixes */
+.abh-bottom,.abh-portrait,.abh-bars,.abh-hotbar-wrap{min-width:0;box-sizing:border-box}
+.abh-portrait{width:100%;max-width:100%;overflow:hidden}
+.abh-bars{width:100%;max-width:220px}
+.abh-hp,.abh-mana{width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden}
+.abh-hp i,.abh-mana i{width:0;max-width:100%;min-width:0;box-sizing:border-box}
+.abh-hp span,.abh-mana span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px;box-sizing:border-box}
+
+/* Character sheet badges: compact, aligned and readable on every panel size. */
+.character-hero-banner .identity-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.character-hero-banner .identity-badges .badge,.paper-doll-panel .badge,.profile-section-title .badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px;padding:4px 8px;box-sizing:border-box;border:1px solid #526b80;border-radius:999px;background:#122438;color:#dceefa;font-size:8px;line-height:1;letter-spacing:.08em;font-weight:800;white-space:nowrap}
+.character-hero-banner .identity-badges .badge.purple{border-color:#735b99;background:#261d38;color:#dccaff}
+.character-hero-banner .identity-badges .badge.green{border-color:#4d8069;background:#142a24;color:#bcebd5}
+.profile-section-title .badge{margin-left:auto}
+.paper-slot.has-upgrade .slot-upgrade{z-index:5}
+
+/* Clean projectile language: one crisp ranger shaft, then class-specific silhouettes. */
+.attack-fx{overflow:visible}
+.attack-arrow{background:transparent!important;box-shadow:none!important}
+.attack-arrow .arrow-shaft{position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#ffd77b,#fff4c4);box-shadow:0 0 12px #ffd56b;border-radius:99px}
+.attack-arrow .arrow-head{z-index:2}
+.attack-shield-projectile,.attack-dagger-projectile{height:32px;width:32px;background:transparent;box-shadow:none;display:grid;place-items:center;animation:classProjectileTravel .30s cubic-bezier(.2,.7,.25,1) forwards}
+.shield-projectile-shape,.dagger-projectile-shape{display:block;font-size:28px;line-height:1;filter:drop-shadow(0 0 8px #72dfff);animation:projectileSpin .30s linear forwards}
+.dagger-projectile-shape{font-size:27px;filter:drop-shadow(0 0 8px #d8a8ff)}
+.attack-projectile{animation:projectileBurst .24s linear}
+@keyframes classProjectileTravel{from{transform:translateX(0) scale(.65);opacity:.25}25%{opacity:1}to{transform:translateX(calc(var(--target-left) - var(--attacker-left,0%))) scale(1);opacity:.9}}
+@keyframes projectileSpin{from{transform:rotate(-20deg) scale(.7)}to{transform:rotate(20deg) scale(1)}}
+
+@media(max-width:700px){.abh-bars{max-width:none}.character-hero-banner .identity-badges .badge{font-size:7px;padding:4px 6px}.profile-section-title .badge{font-size:7px}}
