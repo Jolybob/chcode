@@ -1,12 +1,11 @@
 export class ProfileUI {
   constructor({progression,data,engine}){
-    this.progression=progression;this.data=data;this.engine=engine;
-    this.panel=document.getElementById('profilePanel');this.content=document.getElementById('profileContent');
+    this.progression=progression;this.data=data;this.engine=engine;this.panel=document.getElementById('profilePanel');this.content=document.getElementById('profileContent');this.returnFocus=null;
     document.getElementById('profileBtn').onclick=()=>this.open();document.getElementById('closeProfileBtn').onclick=()=>this.close();
     this.panel.addEventListener('click',e=>{if(e.target===this.panel)this.close()});
   }
-  open(){this.render();this.panel.classList.add('open');this.panel.setAttribute('aria-hidden','false')}
-  close(){this.panel.classList.remove('open');this.panel.setAttribute('aria-hidden','true')}
+  open(){this.returnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;this.panel.inert=false;this.render();this.panel.classList.add('open');this.panel.setAttribute('aria-hidden','false');document.getElementById('closeProfileBtn')?.focus()}
+  close(){const target=this.returnFocus;this.panel.classList.remove('open');if(this.panel.contains(document.activeElement))document.activeElement.blur();this.panel.inert=true;this.panel.setAttribute('aria-hidden','true');if(target?.isConnected)target.focus();this.returnFocus=null}
   render(){
     const p=this.progression,cls=this.data.classes[p.classId]||this.data.classes.ranger,hero=this.engine.hero;
     const base=cls.baseStats||{},growth=cls.growth||{},eq=p.equipmentStats?.()||{},level=p.level;
