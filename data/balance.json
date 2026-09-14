@@ -1,7 +1,8 @@
 {
-  "version": 2,
+  "version": 3,
   "player": {"attackRange":300,"minAttackRange":45,"startingGold":0},
   "combat": {"waveDelay":0.5,"enemySpawnDelay":0.5,"heroDamageVariance":0.12,"enemyDamageVariance":0.1,"critMultiplier":1.5},
   "rewards": {"waveGoldMultiplier":1,"waveXpMultiplier":1,"xpMultiplier":1,"lootMultiplier":1},
-  "game": {"initialSpeed":1}
+  "game": {"initialSpeed":1},
+  "materials": {"lootMultiplier":5}
 }
