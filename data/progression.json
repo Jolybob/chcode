@@ -1,7 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "xpBase": 100,
   "xpGrowth": 1.22,
   "goldPerWave": 30,
-  "levelStatMultiplier": 1.0
+  "levelStatMultiplier": 1.0,
+  "designNotes": {
+    "levelCurve": "XP requirement grows by 22% per level; combat rewards are multiplied by admin economy settings.",
+    "materials": "Enemy and dungeon material rewards use the global material multiplier.",
+    "persistence": "Level, XP, gold, skills, equipment and materials persist between runs."
+  }
 }
