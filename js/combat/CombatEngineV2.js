@@ -1,32 +1,16 @@
 import {rng} from '../core/RNG.js';
-import {CombatUnit} from './CombatUnitV1.js?v=9';
-export class CombatEngine extends (await import('./CombatEngine.js')).CombatEngine {
+import {CombatUnit} from './CombatUnitV1.js?v=10';
+export class CombatEngine extends (await import('./CombatEngine.js?v=3')).CombatEngine {
   constructor(args){super(args);this.bossWave=false}
   start(){super.start();this.bossWave=false}
-  startWave(){this.wave++;this.bus.emit('waveStart',{wave:this.wave});const template=this.dungeon.waveTemplates[this.wave-1];if(!template){this.completeDungeon();return}this.bossWave=Boolean(this.wave===this.dungeon.waves&&this.dungeon.bossId);this.ui.log(this.bossWave?`👑 BOSS WAVE ${this.wave}: ${this.data.enemies[this.dungeon.bossId]?.name||'Boss'}!`:`Wave ${this.wave} incoming.`);this.hero=this.createHero();this.enemies=[];let idx=0;for(const group of template.enemies){for(let i=0;i<group.count;i++){const base=this.data.enemies[group.id];if(!base)throw new Error(`Enemy template not found: ${group.id}`);const enemy=new CombatUnit({id:`e${this.wave}-${idx++}`,team:'enemy',template:base});enemy.position=82+i*4+Math.floor(idx/4)*5;this.enemies.push(enemy)}}if(this.bossWave){const base=this.data.enemies[this.dungeon.bossId];if(base){const boss=new CombatUnit({id:`boss-${this.wave}`,team:'enemy',template:base});boss.position=92;this.enemies.push(boss)}}this.state='combat';this.bus.emit('render')}
-  hit(attacker,target){const before=target.hp;super.hit(attacker,target);if(attacker.team==='hero'&&target.dead&&target.template.boss)this.ui.log(`👑 Boss defeated: ${target.template.name}!`);return before}
-  winWave(){
-    this.state='between';
-    this.progression.bestWave=Math.max(this.progression.bestWave,this.wave);
-    const xp=40+this.wave*8;
-    const gold=Math.round(this.data.progression.goldPerWave*this.wave*this.dungeon.rewardMultiplier);
-    this.progression.gain(xp,gold);
-    if(this.hero&&!this.hero.dead){const heal=Math.max(1,Math.round(this.hero.maxHp*.15));this.hero.hp=Math.min(this.hero.maxHp,this.hero.hp+heal);this.ui.log(`Wave ${this.wave} cleared! +${heal} HP recovered.`)}else this.ui.log(`Wave ${this.wave} cleared!`);
-    if(this.wave>=this.dungeon.waves){this.completeDungeon();return}
-    this.nextWaveTimer=this.data.balance.combat.waveDelay;
-    this.bus.emit('waveClear',{wave:this.wave});
-    this.bus.emit('progressionChanged');
+  startWave(){this.wave++;this.bus.emit('waveStart',{wave:this.wave});const template=this.dungeon.waveTemplates[this.wave-1];if(!template){this.completeDungeon();return}this.bossWave=Boolean(this.wave===this.dungeon.waves&&this.dungeon.bossId);this.ui.log(this.bossWave?`👑 BOSS WAVE ${this.wave}: ${this.data.enemies[this.dungeon.bossId]?.name||'Boss'}!`:`Wave ${this.wave}${this.wave>=3&&this.wave%3===0?' — ELITE threats detected':''}.`);this.hero=this.createHero();this.enemies=[];let idx=0;for(const group of template.enemies){for(let i=0;i<group.count;i++){const base=this.data.enemies[group.id];if(!base)throw new Error(`Enemy template not found: ${group.id}`);const enemy=new CombatUnit({id:`e${this.wave}-${idx++}`,team:'enemy',template:base});enemy.position=82+i*4+Math.floor(idx/4)*5;enemy.specialTimer=group.id==='cave_beast'?4:group.id==='orc'?5:999;enemy.elite=!this.bossWave&&this.wave>=3&&this.wave%3===0&&idx%2===1;if(enemy.elite){enemy.maxHp=Math.round(enemy.maxHp*1.45);enemy.hp=enemy.maxHp;enemy.attack*=1.28;enemy.defense*=1.18;enemy.attackSpeed*=1.08}this.enemies.push(enemy)}}if(this.bossWave){const base=this.data.enemies[this.dungeon.bossId];if(base){const boss=new CombatUnit({id:`boss-${this.wave}`,team:'enemy',template:base});boss.position=92;boss.specialTimer=6;boss.elite=true;this.enemies.push(boss)}}this.state='combat';this.bus.emit('render')}
+  updateUnits(dt){for(const enemy of this.enemies){if(enemy.specialTimer!=null)enemy.specialTimer-=dt}super.updateUnits(dt)}
+  createHero(){const h=super.createHero();const role=this.currentClass().role;if(role==='tank')h.guardianGuard=true;if(role==='damage')h.assassinExecute=true;if(role==='ranged')h.rangerMastery=true;return h}
+  hit(attacker,target){const targetWasLow=attacker.team==='hero'&&attacker.assassinExecute&&target.hp/target.maxHp<=.30;let oldDefense=target.defense;if(attacker.team==='enemy'&&target.team==='hero'&&this.currentClass().role==='tank')target.defense*=1.2;super.hit(attacker,target);target.defense=oldDefense;if(attacker.team==='hero'&&targetWasLow&&!target.dead){const bonus=Math.max(1,Math.round(attacker.attack*.35*(100/(100+target.defense))));target.hp=Math.max(0,target.hp-bonus);this.ui.fxCrit(target,bonus);this.progression.totalDamage+=bonus;if(target.hp<=0){target.hp=0;target.dead=true;if(target.team==='enemy'){this.progression.totalKills++;this.progression.gain(target.template.xp,target.template.gold[0]+rng.int(0,target.template.gold[1]-target.template.gold[0]));this.rollLoot(target.template)}}}
+    if(attacker.team==='hero'&&target.dead&&target.template.boss)this.ui.log(`👑 Boss defeated: ${target.template.name}!`);
+    if(attacker.team==='enemy'&&target.team==='hero'&&attacker.specialTimer<=0&&!target.dead){const id=attacker.template.id;if(id==='cave_beast'){target.effects.push({type:'poison',remaining:4,dps:7});this.ui.log(`☠️ ${attacker.template.name} applies poison.`);attacker.specialTimer=6}else if(id==='orc'){attacker.attack*=1.22;attacker.attackSpeed*=1.15;this.ui.log(`🔥 ${attacker.template.name} enrages!`);attacker.specialTimer=999}else if(attacker.template.boss){target.effects.push({type:'poison',remaining:5,dps:10});this.ui.log(`⚡ Guardian shockwave poisons the hero.`);attacker.specialTimer=7}}
+    return target.hp;
   }
-  completeDungeon(){
-    this.state='victory';this.active=false;
-    const candidates=Object.keys(this.data.items).filter(id=>this.data.items[id].rarity!=='common');
-    const rewardId=candidates.length?candidates[rng.int(0,candidates.length-1)]:Object.keys(this.data.items)[0];
-    if(rewardId)this.progression.addLoot(rewardId);
-    const gold=Math.round(150*this.dungeon.rewardMultiplier);this.progression.gold+=gold;
-    this.progression.addMaterials({scrap:5,crystal:2,ember:1});
-    this.bus.emit('dungeonReward',{dungeonId:this.dungeon.id,itemId:rewardId,gold});
-    const reward=this.data.items[rewardId];
-    this.ui.log(`🏆 Dungeon complete! +${gold} gold + ${reward?.name||'reward'} + materials.`);
-    this.bus.emit('victory');
-  }
+  winWave(){this.state='between';this.progression.bestWave=Math.max(this.progression.bestWave,this.wave);const xp=40+this.wave*8+(this.wave%3===0?20:0);const gold=Math.round(this.data.progression.goldPerWave*this.wave*this.dungeon.rewardMultiplier*(this.wave%3===0?1.35:1));this.progression.gain(xp,gold);if(this.hero&&!this.hero.dead){const heal=Math.max(1,Math.round(this.hero.maxHp*.15));this.hero.hp=Math.min(this.hero.maxHp,this.hero.hp+heal);this.ui.log(`Wave ${this.wave} cleared! +${heal} HP recovered.${this.wave%3===0?' Elite clear bonus!':''}`)}else this.ui.log(`Wave ${this.wave} cleared!`);if(this.wave>=this.dungeon.waves){this.completeDungeon();return}this.nextWaveTimer=this.data.balance.combat.waveDelay;this.bus.emit('waveClear',{wave:this.wave});this.bus.emit('progressionChanged')}
+  completeDungeon(){this.state='victory';this.active=false;const candidates=Object.keys(this.data.items).filter(id=>this.data.items[id].rarity!=='common');const rewardId=candidates.length?candidates[rng.int(0,candidates.length-1)]:Object.keys(this.data.items)[0];if(rewardId)this.progression.addLoot(rewardId);const gold=Math.round(150*this.dungeon.rewardMultiplier);this.progression.gold+=gold;this.progression.addMaterials({scrap:5,crystal:2,ember:1});this.bus.emit('dungeonReward',{dungeonId:this.dungeon.id,itemId:rewardId,gold});const reward=this.data.items[rewardId];this.ui.log(`🏆 Dungeon complete! +${gold} gold + ${reward?.name||'reward'} + materials.`);this.bus.emit('victory')}
 }
