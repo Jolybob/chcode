@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "items": {
+    "training_bow": {"id":"training_bow","name":"Training Bow","slot":"weapon","rarity":"common","icon":"🏹","stats":{"attack":8},"description":"A reliable starter bow."},
+    "hunter_bow": {"id":"hunter_bow","name":"Hunter's Bow","slot":"weapon","rarity":"rare","icon":"🏹","stats":{"attack":18,"critChance":0.04},"description":"Balanced bow favored by hunters."},
+    "leather_armor": {"id":"leather_armor","name":"Leather Armor","slot":"armor","rarity":"common","icon":"🥋","stats":{"hp":45,"defense":5},"description":"Light protection without slowing the wearer."},
+    "scale_armor": {"id":"scale_armor","name":"Scale Armor","slot":"armor","rarity":"rare","icon":"🛡️","stats":{"hp":90,"defense":10},"description":"Tough scales offer excellent protection."},
+    "wood_ring": {"id":"wood_ring","name":"Wooden Ring","slot":"ring","rarity":"common","icon":"💍","stats":{"attack":4,"hp":20},"description":"A simple ring with a faint magical pulse."},
+    "ember_ring": {"id":"ember_ring","name":"Ember Ring","slot":"ring","rarity":"epic","icon":"💍","stats":{"attack":10,"critChance":0.06},"description":"Warm to the touch and strangely powerful."}
+  }
+}
