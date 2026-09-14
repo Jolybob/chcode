@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "materials": {
     "scrap":{"name":"Scrap","icon":"🔩"},
     "crystal":{"name":"Arcane Crystal","icon":"💎"},
@@ -13,7 +13,6 @@
     "moonlit_longbow_crafted":{"name":"Forge Moonlit Longbow","baseItemId":"moonlit_longbow","cost":{"scrap":16,"crystal":5,"ember":1,"gold":175}},
     "dreadthorn_bow_crafted":{"name":"Forge Dreadthorn Bow","baseItemId":"dreadthorn_bow","cost":{"scrap":24,"crystal":8,"ember":3,"gold":300}},
     "astral_starseeker_crafted":{"name":"Forge Astral Starseeker","baseItemId":"astral_starseeker","cost":{"scrap":32,"crystal":12,"ember":5,"gold":500}},
-
     "scale_armor_crafted":{"name":"Forge Scale Armor","baseItemId":"scale_armor","cost":{"scrap":10,"crystal":3,"gold":90}},
     "reinforced_leather_crafted":{"name":"Forge Reinforced Leather","baseItemId":"reinforced_leather","cost":{"scrap":8,"crystal":1,"gold":55}},
     "orc_plate_crafted":{"name":"Forge Orc Warplate","baseItemId":"orc_plate","cost":{"scrap":15,"crystal":3,"gold":120}},
@@ -21,7 +20,6 @@
     "spider_silk_armor_crafted":{"name":"Weave Spider-Silk Armor","baseItemId":"spider_silk_armor","cost":{"scrap":16,"crystal":4,"ember":1,"gold":155}},
     "demonforged_plate_crafted":{"name":"Forge Demonforged Plate","baseItemId":"demonforged_plate","cost":{"scrap":28,"crystal":9,"ember":4,"gold":340}},
     "astral_aegis_crafted":{"name":"Forge Astral Aegis","baseItemId":"astral_aegis","cost":{"scrap":36,"crystal":13,"ember":5,"gold":540}},
-
     "ember_ring_crafted":{"name":"Forge Ember Ring","baseItemId":"ember_ring","cost":{"crystal":5,"ember":3,"gold":120}},
     "swiftwood_ring_crafted":{"name":"Forge Swiftwood Ring","baseItemId":"swiftwood_ring","cost":{"scrap":6,"crystal":1,"gold":50}},
     "orc_bone_ring_crafted":{"name":"Forge Orc-Bone Ring","baseItemId":"orc_bone_ring","cost":{"scrap":10,"crystal":2,"gold":80}},
