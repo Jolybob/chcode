@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "materials": {
+    "scrap": {"name":"Scrap", "icon":"🔩"},
+    "crystal": {"name":"Arcane Crystal", "icon":"💎"},
+    "ember": {"name":"Ember Shard", "icon":"🔥"}
+  },
+  "recipes": {
+    "hunter_bow_crafted": {"name":"Forge Hunter's Bow", "baseItemId":"hunter_bow", "cost":{"scrap":8,"crystal":2,"gold":60}},
+    "scale_armor_crafted": {"name":"Forge Scale Armor", "baseItemId":"scale_armor", "cost":{"scrap":10,"crystal":3,"gold":90}},
+    "ember_ring_crafted": {"name":"Forge Ember Ring", "baseItemId":"ember_ring", "cost":{"crystal":5,"ember":3,"gold":120}}
+  }
+}
