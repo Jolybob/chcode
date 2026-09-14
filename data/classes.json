@@ -1,23 +1,23 @@
 {
-  "version": 3,
+  "version": 4,
   "classes": {
     "ranger": {
       "id":"ranger","name":"Ranger","role":"ranged","icon":"🏹",
-      "baseStats":{"hp":180,"mana":120,"manaRegen":8,"attack":28,"defense":8,"attackSpeed":1.15,"critChance":0.10,"critDamage":1.5,"range":270},
+      "baseStats":{"hp":180,"mana":120,"manaRegen":3,"attack":28,"defense":8,"attackSpeed":1.15,"critChance":0.10,"critDamage":1.5,"range":270},
       "growth":{"hp":22,"attack":5,"defense":1.2},
       "spellIds":["poison_arrow","ranger_volley","healing_draught"],
       "description":"Balanced ranged damage with poison, area damage and emergency self-healing."
     },
     "guardian": {
       "id":"guardian","name":"Guardian","role":"tank","icon":"🛡️",
-      "baseStats":{"hp":300,"mana":140,"manaRegen":10,"attack":20,"defense":18,"attackSpeed":0.78,"critChance":0.05,"critDamage":1.5,"range":150},
+      "baseStats":{"hp":300,"mana":140,"manaRegen":3,"attack":20,"defense":18,"attackSpeed":0.78,"critChance":0.05,"critDamage":1.5,"range":150},
       "growth":{"hp":34,"attack":3.5,"defense":2.0},
       "spellIds":["guardian_shield","guardian_recovery","guardian_slam"],
       "description":"Durable frontline fighter using shields, recovery and area control."
     },
     "assassin": {
       "id":"assassin","name":"Assassin","role":"damage","icon":"🗡️",
-      "baseStats":{"hp":145,"mana":110,"manaRegen":9,"attack":38,"defense":5,"attackSpeed":1.45,"critChance":0.22,"critDamage":1.9,"range":230},
+      "baseStats":{"hp":145,"mana":110,"manaRegen":3,"attack":38,"defense":5,"attackSpeed":1.45,"critChance":0.22,"critDamage":1.9,"range":230},
       "growth":{"hp":17,"attack":7,"defense":0.8},
       "spellIds":["poison_arrow","shadow_strike","blade_storm"],
       "description":"Fast glass cannon with lethal single-target attacks and area burst."
