@@ -1,12 +1,13 @@
 {
-  "version": 2,
-  "xpBase": 100,
-  "xpGrowth": 1.22,
-  "goldPerWave": 30,
+  "version": 3,
+  "xpBase": 80,
+  "xpGrowth": 1.16,
+  "goldPerWave": 28,
   "levelStatMultiplier": 1.0,
   "designNotes": {
-    "levelCurve": "XP requirement grows by 22% per level; combat rewards are multiplied by admin economy settings.",
-    "materials": "Enemy and dungeon material rewards use the global material multiplier.",
-    "persistence": "Level, XP, gold, skills, equipment and materials persist between runs."
+    "levelCurve": "Infinite character levels. XP starts at 80 and grows 16% per level, keeping early progression fast while maintaining a long-term curve.",
+    "skillCurve": "Every character level grants one skill point. Skill ranks are infinite with no hard cap; each rank applies its defined linear stat bonus.",
+    "rewards": "Wave rewards are tuned for steady progression, with equipment and dungeon rewards providing larger power spikes.",
+    "persistence": "Level, XP, gold, skills, equipment and materials persist between runs and dungeons."
   }
 }
