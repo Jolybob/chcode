@@ -7,7 +7,7 @@ import {AdminUI} from './ui/AdminUI.js';
 import {ProfileUI} from './ui/ProfileUI.js';
 import {DungeonUI} from './ui/DungeonUI.js';
 import {InventoryUI} from './ui/InventoryUI.js';
-import {CraftingUI} from './ui/CraftingUI.js?v=2';
+import {CraftingUI} from './ui/CraftingUI.js?v=3';
 import {JobsUI} from './ui/JobsUI.js';
 import {AutoBattlerHUD} from './ui/AutoBattlerHUD.js';
 const data=new DataManager();await data.load();const bus=new EventBus();const progression=new ProgressionSystem({...data.progression,...data.balance.rewards,...data.balance.player,items:data.items,jobs:data.jobs},bus);const ui=new CombatUI(null,progression,data);const engine=new CombatEngine({data,bus,progression,ui});ui.engine=engine;new AdminUI(data,progression,engine,bus);const profile=new ProfileUI({progression,data,engine});new DungeonUI({data,engine,progression});new InventoryUI({progression,data,engine});new CraftingUI({progression,data});new JobsUI({progression,data});const autoHud=new AutoBattlerHUD({progression,data,engine});
