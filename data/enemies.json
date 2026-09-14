@@ -1,9 +1,9 @@
 {
   "version": 1,
   "enemies": {
-    "slime": {"id":"slime","name":"Slime","icon":"🟢","tier":1,"stats":{"hp":90,"attack":10,"defense":2,"attackSpeed":0.75,"range":55},"xp":24,"gold":[5,9]},
-    "goblin": {"id":"goblin","name":"Goblin","icon":"👺","tier":1,"stats":{"hp":125,"attack":15,"defense":4,"attackSpeed":0.85,"range":60},"xp":32,"gold":[7,12]},
-    "orc": {"id":"orc","name":"Orc Brute","icon":"👹","tier":2,"stats":{"hp":230,"attack":24,"defense":9,"attackSpeed":0.7,"range":62},"xp":50,"gold":[12,20]},
-    "cave_beast": {"id":"cave_beast","name":"Cave Beast","icon":"🐺","tier":3,"stats":{"hp":420,"attack":38,"defense":12,"attackSpeed":0.6,"range":70},"xp":95,"gold":[22,34]}
+    "slime": {"id":"slime","name":"Slime","icon":"🟢","tier":1,"stats":{"hp":90,"attack":10,"defense":2,"attackSpeed":0.75,"range":55},"xp":24,"gold":[5,9],"loot":[{"itemId":"leather_armor","chance":0.08},{"itemId":"wood_ring","chance":0.05}]},
+    "goblin": {"id":"goblin","name":"Goblin","icon":"👺","tier":1,"stats":{"hp":125,"attack":15,"defense":4,"attackSpeed":0.85,"range":60},"xp":32,"gold":[7,12],"loot":[{"itemId":"hunter_bow","chance":0.06},{"itemId":"leather_armor","chance":0.12}]},
+    "orc": {"id":"orc","name":"Orc Brute","icon":"👹","tier":2,"stats":{"hp":230,"attack":24,"defense":9,"attackSpeed":0.7,"range":62},"xp":50,"gold":[12,20],"loot":[{"itemId":"scale_armor","chance":0.1},{"itemId":"hunter_bow","chance":0.1}]},
+    "cave_beast": {"id":"cave_beast","name":"Cave Beast","icon":"🐺","tier":3,"stats":{"hp":420,"attack":38,"defense":12,"attackSpeed":0.6,"range":70},"xp":95,"gold":[22,34],"loot":[{"itemId":"ember_ring","chance":0.15},{"itemId":"scale_armor","chance":0.12}]}
   }
 }
