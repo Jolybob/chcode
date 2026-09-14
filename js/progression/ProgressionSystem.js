@@ -1,7 +1,7 @@
 export class ProgressionSystem {
   constructor(data,bus){this.data=data;this.bus=bus;this.level=1;this.xp=0;this.gold=Number(this.data.startingGold||0);this.totalKills=0;this.totalDamage=0;this.bestWave=0;this.classId='ranger';this.skillPoints=0;this.skills={power:0,vitality:0,haste:0,precision:0};this.inventory=[];this.equipment={weapon:'training_bow',armor:null,ring:null};this.materials={scrap:0,crystal:0,ember:0};this.jobs={farmer:{level:1,xp:0},alchemist:{level:1,xp:0},miner:{level:1,xp:0},woodcutter:{level:1,xp:0}};this.farm=Array.from({length:6},()=>({crop:null,plantedAt:0,readyAt:0}))}
   xpToNext(){return Math.floor(this.data.xpBase*Math.pow(this.data.xpGrowth,this.level-1))}
-  gain(xp,gold){this.xp+=Math.floor(xp*this.data.waveXpMultiplier);this.gold+=Math.floor(gold*this.data.waveGoldMultiplier);this.checkLevel();this.bus.emit('progressionChanged')}
+  gain(xp,gold){const xpMultiplier=Number(this.data.xpMultiplier??this.data.waveXpMultiplier??1);this.xp+=Math.floor(xp*xpMultiplier);this.gold+=Math.floor(gold*(this.data.waveGoldMultiplier??1));this.checkLevel();this.bus.emit('progressionChanged')}
   checkLevel(){let leveled=false;while(this.xp>=this.xpToNext()){this.xp-=this.xpToNext();this.level++;this.skillPoints++;leveled=true}if(leveled)this.bus.emit('levelUp',{level:this.level})}
   selectClass(id){if(typeof id!=='string'||!id)return false;this.classId=id;this.bus.emit('classChanged',{classId:id});this.bus.emit('progressionChanged');return true}
   buySkill(id){const max=5;if(!(id in this.skills)||this.skillPoints<1||this.skills[id]>=max)return false;this.skills[id]++;this.skillPoints--;this.bus.emit('skillChanged',{skillId:id});this.bus.emit('progressionChanged');return true}
