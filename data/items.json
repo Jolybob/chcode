@@ -1,11 +1,31 @@
 {
-  "version": 1,
+  "version": 2,
   "items": {
-    "training_bow": {"id":"training_bow","name":"Training Bow","slot":"weapon","rarity":"common","icon":"🏹","stats":{"attack":8},"description":"A reliable starter bow."},
-    "hunter_bow": {"id":"hunter_bow","name":"Hunter's Bow","slot":"weapon","rarity":"rare","icon":"🏹","stats":{"attack":18,"critChance":0.04},"description":"Balanced bow favored by hunters."},
-    "leather_armor": {"id":"leather_armor","name":"Leather Armor","slot":"armor","rarity":"common","icon":"🥋","stats":{"hp":45,"defense":5},"description":"Light protection without slowing the wearer."},
-    "scale_armor": {"id":"scale_armor","name":"Scale Armor","slot":"armor","rarity":"rare","icon":"🛡️","stats":{"hp":90,"defense":10},"description":"Tough scales offer excellent protection."},
-    "wood_ring": {"id":"wood_ring","name":"Wooden Ring","slot":"ring","rarity":"common","icon":"💍","stats":{"attack":4,"hp":20},"description":"A simple ring with a faint magical pulse."},
-    "ember_ring": {"id":"ember_ring","name":"Ember Ring","slot":"ring","rarity":"epic","icon":"💍","stats":{"attack":10,"critChance":0.06},"description":"Warm to the touch and strangely powerful."}
+    "training_bow":{"id":"training_bow","name":"Training Bow","slot":"weapon","rarity":"common","icon":"🏹","stats":{"attack":8},"description":"A reliable starter bow."},
+    "hunter_bow":{"id":"hunter_bow","name":"Hunter's Bow","slot":"weapon","rarity":"rare","icon":"🏹","stats":{"attack":18,"critChance":0.04},"description":"Balanced bow favored by hunters."},
+    "longbow_of_winds":{"id":"longbow_of_winds","name":"Longbow of Winds","slot":"weapon","rarity":"uncommon","icon":"🏹","stats":{"attack":14,"attackSpeed":0.08},"description":"A light bow that rewards a quick rhythm."},
+    "orcish_warbow":{"id":"orcish_warbow","name":"Orcish Warbow","slot":"weapon","rarity":"rare","icon":"🏹","stats":{"attack":27,"defense":3},"description":"A heavy warbow built for brutal volleys."},
+    "venom_recurve":{"id":"venom_recurve","name":"Venom Recurve","slot":"weapon","rarity":"epic","icon":"🏹","stats":{"attack":34,"critChance":0.07},"description":"A recurved bow coated with alchemical venom."},
+    "moonlit_longbow":{"id":"moonlit_longbow","name":"Moonlit Longbow","slot":"weapon","rarity":"epic","icon":"🏹","stats":{"attack":39,"attackSpeed":0.12,"critChance":0.04},"description":"Its silver limbs seem to move before the arrow does."},
+    "dreadthorn_bow":{"id":"dreadthorn_bow","name":"Dreadthorn Bow","slot":"weapon","rarity":"legendary","icon":"🏹","stats":{"attack":52,"critChance":0.1,"critDamage":0.2},"description":"A legendary bow grown from a cursed thornwood."},
+    "astral_starseeker":{"id":"astral_starseeker","name":"Astral Starseeker","slot":"weapon","rarity":"legendary","icon":"🏹","stats":{"attack":66,"critChance":0.12,"attackSpeed":0.1},"description":"A celestial bow that bends starlight into deadly arrows."},
+
+    "leather_armor":{"id":"leather_armor","name":"Leather Armor","slot":"armor","rarity":"common","icon":"🥋","stats":{"hp":45,"defense":5},"description":"Light protection without slowing the wearer."},
+    "scale_armor":{"id":"scale_armor","name":"Scale Armor","slot":"armor","rarity":"rare","icon":"🛡️","stats":{"hp":90,"defense":10},"description":"Tough scales offer excellent protection."},
+    "reinforced_leather":{"id":"reinforced_leather","name":"Reinforced Leather","slot":"armor","rarity":"uncommon","icon":"🥋","stats":{"hp":70,"defense":8},"description":"Layered leather reinforced for long expeditions."},
+    "orc_plate":{"id":"orc_plate","name":"Orc Warplate","slot":"armor","rarity":"rare","icon":"🛡️","stats":{"hp":125,"defense":15},"description":"Salvaged warplate forged in an orcish furnace."},
+    "crypt_mail":{"id":"crypt_mail","name":"Crypt Mail","slot":"armor","rarity":"epic","icon":"🛡️","stats":{"hp":155,"defense":18,"attack":4},"description":"Cold undead mail that seems to resist every wound."},
+    "spider_silk_armor":{"id":"spider_silk_armor","name":"Spider-Silk Armor","slot":"armor","rarity":"epic","icon":"🥋","stats":{"hp":135,"defense":13,"attackSpeed":0.1},"description":"Flexible silk armor that barely interferes with movement."},
+    "demonforged_plate":{"id":"demonforged_plate","name":"Demonforged Plate","slot":"armor","rarity":"legendary","icon":"🛡️","stats":{"hp":230,"defense":27,"attack":8},"description":"A cursed plate harness tempered in infernal fire."},
+    "astral_aegis":{"id":"astral_aegis","name":"Astral Aegis","slot":"armor","rarity":"legendary","icon":"🛡️","stats":{"hp":285,"defense":32,"critDamage":0.1},"description":"Ancient armor etched with constellations."},
+
+    "wood_ring":{"id":"wood_ring","name":"Wooden Ring","slot":"ring","rarity":"common","icon":"💍","stats":{"attack":4,"hp":20},"description":"A simple ring with a faint magical pulse."},
+    "ember_ring":{"id":"ember_ring","name":"Ember Ring","slot":"ring","rarity":"epic","icon":"💍","stats":{"attack":10,"critChance":0.06},"description":"Warm to the touch and strangely powerful."},
+    "swiftwood_ring":{"id":"swiftwood_ring","name":"Swiftwood Ring","slot":"ring","rarity":"uncommon","icon":"💍","stats":{"attack":6,"attackSpeed":0.1},"description":"A living wooden ring that quickens the hand."},
+    "orc_bone_ring":{"id":"orc_bone_ring","name":"Orc-Bone Ring","slot":"ring","rarity":"rare","icon":"💍","stats":{"attack":11,"hp":35,"defense":3},"description":"A brutal trophy set with a crude iron band."},
+    "venom_ring":{"id":"venom_ring","name":"Venom Ring","slot":"ring","rarity":"rare","icon":"💍","stats":{"attack":13,"critChance":0.05},"description":"A dark gemstone holds a drop of persistent venom."},
+    "lich_signet":{"id":"lich_signet","name":"Lich's Signet","slot":"ring","rarity":"epic","icon":"💍","stats":{"attack":17,"critDamage":0.18,"hp":30},"description":"A royal undead seal that amplifies devastating strikes."},
+    "demon_eye_ring":{"id":"demon_eye_ring","name":"Demon-Eye Ring","slot":"ring","rarity":"legendary","icon":"💍","stats":{"attack":24,"critChance":0.1,"critDamage":0.25},"description":"The gem watches every weakness and whispers where to strike."},
+    "astral_crown_ring":{"id":"astral_crown_ring","name":"Astral Crown Ring","slot":"ring","rarity":"legendary","icon":"💍","stats":{"attack":30,"hp":80,"critChance":0.08},"description":"A ring forged around a fragment of a fallen star."}
   }
 }
